@@ -4,10 +4,10 @@ const {
   ContatoCreate,
   ContatoUpdate,
   ContatoDelete,
+  validChannel,
 } = require('../service/ContactService');
 
 class ContactController {
-
   static async getByIdMiddleware(req, res, next) {
     try {
       const { id } = req.params;
@@ -17,6 +17,13 @@ class ContactController {
     } catch (error) {
       return res.status(500).send('internal server error');
     }
+  }
+
+  static async validChannel(req, res, next) {
+    const { canal, valor } = req.body;
+    if (!canal || !valor) return res.status(401).send('Parâmetros inválidos');
+    if (!await validChannel(canal, valor)) return res.status(401).send('o canal ou valor é inválido');
+    return next();
   }
 
   static async getAll(req, res) {
@@ -47,7 +54,7 @@ class ContactController {
       } = req.body;
       if (!nome || !canal || !valor) return res.status(401).send('Parametros invalidos');
       const contato = await ContatoCreate(nome, canal, valor, obs);
-      return res.status(200).send(contato);
+      return res.status(201).send(contato);
     } catch (error) {
       return res.status(401).send('Parametros invalidos');
     }
@@ -59,7 +66,7 @@ class ContactController {
       if (!contato) return res.status(404).send('Não encontrado');
       if (!req.body) return res.status(401).send('Parametros invalidos');
       const contatoUpdated = await ContatoUpdate(contato, req.body);
-      return res.status(200).send(contatoUpdated);
+      return res.status(204).send(contatoUpdated);
     } catch (error) {
       return res.status(401).send('Parametros invalidos');
     }
@@ -71,7 +78,7 @@ class ContactController {
       if (!contato) return res.status(401).send('Parametros invalidos');
       const contadoDeleted = await ContatoDelete(contato);
       if (!contadoDeleted) return res.status(404).send('Não encontrado');
-      return res.status(200).send('deleted');
+      return res.status(204).send('deleted');
     } catch (error) {
       return res.status(500).send('internal server error');
     }

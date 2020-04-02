@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const {
-  getAll, ContatoCreate, ContatoUpdate, ContatoDelete, getOne, getByIdMiddleware,
+  getAll, ContatoCreate, validChannel, ContatoUpdate, ContatoDelete, getOne, getByIdMiddleware,
 } = require('../controller/ContatoController');
 
 class ContatoRouter {
@@ -14,7 +14,7 @@ class ContatoRouter {
 
     this.router.route('/')
       .get(getAll)
-      .post(ContatoCreate);
+      .post(validChannel, ContatoCreate);
 
     this.router.route('/:id')
       .get(getOne)
