@@ -3,6 +3,8 @@ const Model = require('../model/Contato');
 class ContactService {
 
   static async getAll(page = 0, size = 10) {
+    page = Number.parseInt(page);
+    size = Number.parseInt(size);
     return Model.find().limit(size).skip(page * size);
   }
 

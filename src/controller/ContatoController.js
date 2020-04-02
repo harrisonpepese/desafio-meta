@@ -49,7 +49,7 @@ class ContactController {
       const contato = await ContatoCreate(nome, canal, valor, obs);
       return res.status(200).send(contato);
     } catch (error) {
-      return res.status(500).send('internal server error');
+      return res.status(401).send('Parametros invalidos');
     }
   }
 
@@ -57,12 +57,11 @@ class ContactController {
     try {
       const { contato } = req;
       if (!contato) return res.status(404).send('Não encontrado');
-      const { nome, canal, valor } = req.body;
-      if (!nome || canal || valor) return res.status(401).send('Parametros invalidos');
+      if (!req.body) return res.status(401).send('Parametros invalidos');
       const contatoUpdated = await ContatoUpdate(contato, req.body);
       return res.status(200).send(contatoUpdated);
     } catch (error) {
-      return res.status(500).send('internal server error');
+      return res.status(401).send('Parametros invalidos');
     }
   }
 
